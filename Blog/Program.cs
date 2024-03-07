@@ -8,11 +8,16 @@ using WebApplication6.Repositories.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddEndpointsApiExplorer();
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDataBase");
 builder.Services.AddSingleton<DbConnection>(_ =>
     new NpgsqlConnection(connectionString));
 builder.Services.AddSingleton<IArticleRepository, ArticleRepository>();
+
+builder.Services.AddSingleton<ICommentRepository, CommentRepository>();
+
+
 builder.Services
     .AddFluentMigratorCore().ConfigureRunner(rb =>
         rb.AddPostgres()
@@ -22,6 +27,7 @@ builder.Services
     .BuildServiceProvider(false);
 
 var app = builder.Build();
+app.MapControllers();
 using var serviceProvider = app.Services.CreateScope();
 var services = serviceProvider.ServiceProvider;
 var runner = services.GetRequiredService<IMigrationRunner>();
