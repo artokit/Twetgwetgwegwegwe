@@ -2,6 +2,7 @@ using System.Reflection;
 using FluentMigrator.Runner;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 var connectionString = builder.Configuration.GetConnectionString("ConnectionDataBase");
 builder.Services
@@ -13,6 +14,7 @@ builder.Services
     .BuildServiceProvider(false);
 
 var app = builder.Build();
+app.MapControllers();
 using var serviceProvider = app.Services.CreateScope();
 var services = serviceProvider.ServiceProvider;
 var runner = services.GetRequiredService<IMigrationRunner>();
